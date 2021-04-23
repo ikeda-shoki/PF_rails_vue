@@ -1,9 +1,5 @@
 class PostsController < ApplicationController
   def top
-    
-  end
-
-  def create
-
+    byebug
   end
 end
