@@ -62,3 +62,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem "devise", git: "https://github.com/heartcombo/devise"
 gem 'pry-byebug'
+
+gem "refile", require: "refile/rails", github: 'manfe/refile'
+gem "refile-mini_magick"

@@ -2,17 +2,18 @@
   <div id="top">
     <div class="container">
       <div class="post-form">
-        <input v-model="title" placeholder="タイトル">
-        <input v-model="post_introduction" placeholder="説明">
+        <input v-model="post.title" placeholder="タイトル">
+        <input v-model="post.introduction" placeholder="説明">
         <button @click="addPost">データを送信する</button>
       </div>
       <div v-if="errored">
         <p>データ送信エラーです。入力してください</p>
       </div>
       <div class="post-items">
-        <div class="post-item" v-for="post in posts" :key="post.name">
+        <div class="post-item" v-for="(post, index) in posts" :key="post.id">
           <p>{{ post.title }}</p>
           <p>{{ post.post_introduction }}</p>
+          <button @click="postDelete(post.id, index)">この投稿を削除する</button>
         </div>
       </div>
     </div>
@@ -25,43 +26,52 @@ import axios from 'axios';
 export default {
   data: function () {
     return {
-      message: "Hello year!",
-      title: "",
-      post_introduction: "",
       user_id: 1,
       posts: [],
       errored: false,
+      post: {
+        title: "",
+        introduction: "",
+        user_id: 1,
+      }
     }
   },
-  created() {
+  mounted() {
     axios.get('/api/v1/posts/top.json')
       .then(response => {
         this.posts = response.data;
-        console.log('update')
       })
+      console.log(this.posts)
   },
   methods: {
     addPost() {
-      if (this.title === "" || this.post_introduction === "") {
+      if (this.post.title === "" || this.post.introduction === "") {
         this.errored = true
-        console.log('777')
       }
       else {
-        axios.post('/api/v1/posts.json',{
-          title: this.title,
-          post_introduction: this.post_introduction,
-          user_id: 1,
+        axios.post('/api/v1/posts',{
+          post: {
+            title: this.post.title,
+            post_introduction: this.post.introduction,
+            user_id: this.post.user_id
+          }
         })
-        .then(() => {
-          window.location = "/"
+        .then(response => {
+          this.posts.unshift(response.data)
+          this.post.title = "";
+          this.post.introduction = "";
+        }, error => {
+          console.log(error, response)
         })
-        .catch(error => {
-          console.log(error)
-          this.errored = true
-        })
-        this.title = "";
-        this.post_introduction = "";
       }
+    },
+    postDelete(post_id, index) {
+      axios.delete('/api/v1/posts/' + post_id)
+        .then(response => {
+          this.posts.splice(index, 1);
+        }, error => {
+          console.log(error, response);
+        })
     }
   }
 }

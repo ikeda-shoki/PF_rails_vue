@@ -1,19 +1,26 @@
 class Api::V1::PostsController < ApplicationController
-  protect_from_forgery with: :expection, only: :create
+  skip_before_action :verify_authenticity_token
 
   def create
     @post = Post.new(post_params)
-    @post.save
-    redirect_to  root_path
+    if @post.save
+      render json: @post, status: :created
+    else
+      render json: @post.errors, status: :unprocessable_entity
+    end
   end
 
   def top
     @posts = Post.all
-    render json:@posts
+    render json: @posts
+  end
+
+  def destroy
+    Post.find(params[:id]).destroy!
   end
 
   private
     def post_params
-      params.permit(:title, :post_introduction, :user_id)
+      params.require(:post).permit(:title, :post_introduction, :user_id)
     end
 end

@@ -4,12 +4,13 @@ Rails.application.routes.draw do
   root to: "home#index"
 
   resources :posts, only: [:create]
+  get '/posts/top' => "posts#top"
   resources :users, only: [:index, :show]
 
   namespace :api, { format: 'json' } do
     namespace :v1 do
       resources :users, only: [:index, :show]
-      resources :posts, only: [:create]
+      resources :posts, only: [:create, :destroy]
       get "/posts/top" => "posts#top"
       resources :tasks, only: [:index, :create, :destroy, :update]
     end
