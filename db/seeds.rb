@@ -16,3 +16,7 @@ User.create!(
   account_name: "いけちゃん",
   user_introduction: "よろしくお願いします！",
 )
+
+Task.create!(
+  name: "テスト用タスク"
+)

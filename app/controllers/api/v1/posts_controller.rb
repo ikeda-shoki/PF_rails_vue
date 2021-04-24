@@ -1,5 +1,5 @@
 class Api::V1::PostsController < ApplicationController
-  protect_from_forgery :except => [:create]
+  protect_from_forgery with: :expection, only: :create
 
   def create
     @post = Post.new(post_params)

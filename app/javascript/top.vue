@@ -6,6 +6,9 @@
         <input v-model="post_introduction" placeholder="説明">
         <button @click="addPost">データを送信する</button>
       </div>
+      <div v-if="errored">
+        <p>データ送信エラーです。入力してください</p>
+      </div>
       <div class="post-items">
         <div class="post-item" v-for="post in posts" :key="post.name">
           <p>{{ post.title }}</p>
@@ -27,6 +30,7 @@ export default {
       post_introduction: "",
       user_id: 1,
       posts: [],
+      errored: false,
     }
   },
   created() {
@@ -38,16 +42,26 @@ export default {
   },
   methods: {
     addPost() {
-      axios.post('/api/v1/posts.json',{
-        title: this.title,
-        post_introduction: this.post_introduction,
-        user_id: 1,
-      })
-       .then(response => {
-         console.log(response.data);
-       })
-      this.title = "";
-      this.post_introduction = "";
+      if (this.title === "" || this.post_introduction === "") {
+        this.errored = true
+        console.log('777')
+      }
+      else {
+        axios.post('/api/v1/posts.json',{
+          title: this.title,
+          post_introduction: this.post_introduction,
+          user_id: 1,
+        })
+        .then(() => {
+          window.location = "/"
+        })
+        .catch(error => {
+          console.log(error)
+          this.errored = true
+        })
+        this.title = "";
+        this.post_introduction = "";
+      }
     }
   }
 }
