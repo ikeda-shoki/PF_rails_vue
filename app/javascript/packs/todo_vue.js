@@ -1,9 +1,9 @@
 import Vue from 'vue'
-import UserIndex from '../user_index.vue'
+import Todo from '../todo.vue'
 
 document.addEventListener('DOMContentLoaded', () => {
   const app = new Vue({
-    render: h => h(UserIndex)
+    render: h => h(Todo)
   }).$mount()
   document.body.appendChild(app.$el)
 })
